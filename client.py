@@ -12,12 +12,14 @@ import base64
 import io
 import PIL
 import json
+import six
 
 from tensorflow_serving.apis import predict_pb2
 from tensorflow_serving.apis import prediction_service_pb2_grpc
 from tensorflow.keras.preprocessing import image
 from PIL import Image
 
+from make_tensor_proto import make_tensor_proto
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -27,7 +29,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @cross_origin()
 def image_post():
 	test = request.get_json(force=True)
-	print(test)
+	#print(test)
 	img_c = test['image_content']
 	img_c = base64.b64decode(img_c)
 	buf = io.BytesIO(img_c)
@@ -45,7 +47,7 @@ def image_post():
 	req.model_spec.name = 'test2'
 	req.model_spec.signature_name = 'serving_default'
 	req.inputs['input_image'].CopyFrom(
-	tf.make_tensor_proto(data,shape=[1,150,150,3])
+	make_tensor_proto(data,shape=[1,150,150,3])
 	)
 
 	#send request to docker image container
@@ -53,11 +55,10 @@ def image_post():
 	# response from model
 	floats = np.array(list(result.outputs['dense_1/Softmax:0'].float_val)) 
   	max_ = floats.argmax()
-  	print("\n")
-  	print(floats)
-  	print("\n")
-  	print(max_)
-  	print("\n")
+  	#print(floats)
+  	#print("\n")
+  	#print(max_)
+  	#print("\n")
   	res = json.dumps(max_)
 	return res
 
