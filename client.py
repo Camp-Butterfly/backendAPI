@@ -37,17 +37,17 @@ def image_post():
 	img_tensor = image.img_to_array(img)
 	img_tensor = np.expand_dims(img_tensor, axis=0)
 	data = img_tensor
-
+	print(data)
 	#instantiate request
-	channel = grpc.insecure_channel('192.168.99.100:8500')
+	channel = grpc.insecure_channel('35.193.112.218:8500')
 	grpc.channel_ready_future(channel).result()
 	# create variable for service that sends object to channel
 	stub = prediction_service_pb2_grpc.PredictionServiceStub(channel)
 	# assign values to props of request
 	req = predict_pb2.PredictRequest()
-	req.model_spec.name = 'testmodel'
+	req.model_spec.name = 'model'
 	req.model_spec.signature_name = 'serving_default'
-	req.inputs['input_image'].CopyFrom(
+	req.inputs['conv2d_input'].CopyFrom(
 	tf.make_tensor_proto(data,shape=[1,150,150,3])
 	)
 
@@ -55,12 +55,14 @@ def image_post():
 	result = stub.Predict(req,10.0)
 	
 	#response from model as tensorflow array
-	floats = np.array(list(result.outputs['dense_1/Softmax:0'].float_val)) 
+	floats = np.array(list(result.outputs['dense_1'].float_val)) 
   	#empty response catch
-  	if(not floats.argmax()):
-  		max_ = 4
-  	else:
-  		max_ = floats.argmax()
+  	#if(not floats):
+  	#	max_ = 4
+  	#if(not floats.argmax()):
+  	#	max_ = 4
+  	#else:
+  	max_ = floats.argmax()
 
   	print("\n")
   	print(floats)
