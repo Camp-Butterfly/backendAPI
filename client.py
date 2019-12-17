@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import request
 from flask_cors import CORS, cross_origin
+from flask_cors import cross_origin
 
 from gevent.pywsgi import WSGIServer
 import grpc
@@ -12,14 +13,12 @@ import base64
 import io
 import PIL
 import json
-import six
 
 from tensorflow_serving.apis import predict_pb2
 from tensorflow_serving.apis import prediction_service_pb2_grpc
 from tensorflow.keras.preprocessing import image
 from PIL import Image
 
-from make_tensor_proto import make_tensor_proto
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -47,7 +46,7 @@ def image_post():
 	req.model_spec.name = 'test2'
 	req.model_spec.signature_name = 'serving_default'
 	req.inputs['input_image'].CopyFrom(
-	make_tensor_proto(data,shape=[1,150,150,3])
+	tf.make_tensor_proto(data,shape=[1,150,150,3])
 	)
 
 	#send request to docker image container
