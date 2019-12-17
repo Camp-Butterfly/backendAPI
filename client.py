@@ -25,6 +25,7 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route('/api/v1/model', methods=['POST'])
+@cross_origin()
 def image_post():
 	test = request.get_json(force=True)
 	print(test)
