@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import request
+from flask_cors import CORS
 
 from gevent.pywsgi import WSGIServer
 import grpc
@@ -17,7 +18,9 @@ from tensorflow_serving.apis import prediction_service_pb2_grpc
 from tensorflow.keras.preprocessing import image
 from PIL import Image
 
+
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/api/v1/model', methods=['POST'])
 def image_post():
