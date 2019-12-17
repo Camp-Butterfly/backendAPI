@@ -26,7 +26,8 @@ def image_post():
 	print(test)
 	img_c = test['image_content']
 
-	#preprocessing for base64 encoded image
+	#preprocessing for base64 encoded image which has to do what 
+	#image.load_img does => opens file, resizes to target size then maps to a keras array
 	###
 	img_c = base64.b64decode(img_c)
 	buf = io.BytesIO(img_c)
@@ -38,13 +39,13 @@ def image_post():
 	data = img_tensor
 
 	#instantiate request
-	channel = grpc.insecure_channel('34.68.117.217:8500')
+	channel = grpc.insecure_channel('192.168.99.100:8500')
 	grpc.channel_ready_future(channel).result()
 	# create variable for service that sends object to channel
 	stub = prediction_service_pb2_grpc.PredictionServiceStub(channel)
 	# assign values to props of request
 	req = predict_pb2.PredictRequest()
-	req.model_spec.name = 'test2'
+	req.model_spec.name = 'testmodel'
 	req.model_spec.signature_name = 'serving_default'
 	req.inputs['input_image'].CopyFrom(
 	tf.make_tensor_proto(data,shape=[1,150,150,3])
@@ -56,7 +57,7 @@ def image_post():
 	#response from model as tensorflow array
 	floats = np.array(list(result.outputs['dense_1/Softmax:0'].float_val)) 
   	#empty response catch
-  	if(not floats):
+  	if(not floats.argmax()):
   		max_ = 4
   	else:
   		max_ = floats.argmax()
