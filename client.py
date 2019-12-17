@@ -27,10 +27,12 @@ def image_post():
 	img_c = test['image_content']
 
 	#preprocessing for base64 encoded image
+	###
 	img_c = base64.b64decode(img_c)
 	buf = io.BytesIO(img_c)
 	img = Image.open(buf)
 	img = img.resize([150,150])
+	###
 	img_tensor = image.img_to_array(img)
 	img_tensor = np.expand_dims(img_tensor, axis=0)
 	data = img_tensor
