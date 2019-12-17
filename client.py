@@ -1,7 +1,9 @@
 from flask import Flask
 from flask import request
+from flask_cors import CORS
+from flask_cors import cross_origin
 
-from gevent.pywsgi import WSGIServer
+#from gevent.pywsgi import WSGIServer
 import grpc
 import numpy as np
 import requests
@@ -18,8 +20,11 @@ from tensorflow.keras.preprocessing import image
 from PIL import Image
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route('/api/v1/model', methods=['POST'])
+@cross_origin()
 def image_post():
 	#get base-64 from json object
 	test = request.get_json(force=True)
@@ -73,14 +78,19 @@ def image_post():
   	res = json.dumps(max_)
 	return res
 
-@app.after_request
-def after_request(response):
-  response.headers.add('Access-Control-Allow-Origin', '*')
-  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-  return response
+@app.route("/", methods=['GET'])
+@cross_origin()
+def helloWorld():
+  return "Hello, cross-origin-world!"
+
+#@app.after_request
+#def after_request(response):
+#  response.headers.add('Access-Control-Allow-Origin', '*')
+#  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+#  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+#  return response
 
 #if __name__=='__main__':
-app.run()
-http_server = WSGIServer(('', 5000), app)
-http_server.serve_forever()
+app.run(host='146.95.184.180', port=5000)
+#http_server = WSGIServer(('146.95.184.180', 5000), app)
+#http_server.serve_forever()
