@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import request
 from flask_cors import CORS
+from flask_cors import cross_origin
 
 from gevent.pywsgi import WSGIServer
 import grpc
@@ -21,6 +22,7 @@ from PIL import Image
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route('/api/v1/model', methods=['POST'])
 def image_post():
@@ -58,6 +60,11 @@ def image_post():
   	print("\n")
   	res = json.dumps(max_)
 	return res
+
+@app.route("/")
+@cross_origin()
+def helloWorld():
+  return "Hello, cross-origin-world!"
 
 @app.after_request
 def after_request(response):
