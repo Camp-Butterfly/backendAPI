@@ -1,7 +1,6 @@
 from flask import Flask
 from flask import request
-from flask_cors import CORS
-from flask_cors import cross_origin
+from flask_cors import CORS, cross_origin
 
 from gevent.pywsgi import WSGIServer
 import grpc
@@ -67,12 +66,12 @@ def image_post():
 def helloWorld():
   return "Hello, cross-origin-world!"
 
-@app.after_request
-def after_request(response):
-  response.headers.add('Access-Control-Allow-Origin', '*')
-  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-  return response
+#@app.after_request
+#def after_request(response):
+#  response.headers.add('Access-Control-Allow-Origin', '*')
+#  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+#  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+#  return response
 
 #if __name__=='__main__':
 #app.run()
