@@ -20,7 +20,7 @@ from PIL import Image
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 @app.route('/api/v1/model', methods=['POST'])
 def image_post():
