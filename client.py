@@ -21,9 +21,12 @@ app = Flask(__name__)
 
 @app.route('/api/v1/model', methods=['POST'])
 def image_post():
+	#get base-64 from json object
 	test = request.get_json(force=True)
 	print(test)
 	img_c = test['image_content']
+
+	#preprocessing for base64 encoded image
 	img_c = base64.b64decode(img_c)
 	buf = io.BytesIO(img_c)
 	img = Image.open(buf)
@@ -32,6 +35,7 @@ def image_post():
 	img_tensor = np.expand_dims(img_tensor, axis=0)
 	data = img_tensor
 
+	#instantiate request
 	channel = grpc.insecure_channel('34.68.117.217:8500')
 	grpc.channel_ready_future(channel).result()
 	# create variable for service that sends object to channel
@@ -44,16 +48,23 @@ def image_post():
 	tf.make_tensor_proto(data,shape=[1,150,150,3])
 	)
 
-	#send request to docker image container
+	#make request to docker image container
 	result = stub.Predict(req,10.0)
-	# response from model
+	
+	#response from model as tensorflow array
 	floats = np.array(list(result.outputs['dense_1/Softmax:0'].float_val)) 
-  	max_ = floats.argmax()
+  	#empty response catch
+  	if(not floats):
+  		max_ = 4
+  	else:
+  		max_ = floats.argmax()
+
   	print("\n")
   	print(floats)
   	print("\n")
   	print(max_)
   	print("\n")
+  	# convert numpy integer to json; response to React app
   	res = json.dumps(max_)
 	return res
 
