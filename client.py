@@ -32,7 +32,7 @@ def image_post():
 	img_tensor = np.expand_dims(img_tensor, axis=0)
 	data = img_tensor
 
-	channel = grpc.insecure_channel('192.168.99.100:8500')
+	channel = grpc.insecure_channel('34.68.117.217:8500')
 	# create variable for service that sends object to channel
 	stub = prediction_service_pb2_grpc.PredictionServiceStub(channel)
 	# assign values to props of request
