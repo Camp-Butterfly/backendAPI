@@ -37,7 +37,7 @@ def image_post():
 	stub = prediction_service_pb2_grpc.PredictionServiceStub(channel)
 	# assign values to props of request
 	req = predict_pb2.PredictRequest()
-	req.model_spec.name = 'testmodel'
+	req.model_spec.name = 'test2'
 	req.model_spec.signature_name = 'serving_default'
 	req.inputs['input_image'].CopyFrom(
 	tf.make_tensor_proto(data,shape=[1,150,150,3])
