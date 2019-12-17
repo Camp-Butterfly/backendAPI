@@ -46,7 +46,7 @@ def image_post():
 	req.model_spec.name = 'test2'
 	req.model_spec.signature_name = 'serving_default'
 	req.inputs['input_image'].CopyFrom(
-	tf.contrib.util.make_tensor_proto(data,shape=[1,150,150,3])
+	tf.contrib.util.make_tensor_proto(data)
 	)
 
 	#send request to docker image container
