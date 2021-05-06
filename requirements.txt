@@ -9,7 +9,7 @@ Cython==0.29.14
 enum34==1.1.6
 ez-setup==0.9
 Flask==1.1.1
-Flask-Cors==3.0.8
+Flask-Cors==3.0.9
 funcsigs==1.0.2
 functools32==3.2.3.post2
 futures==3.3.0
